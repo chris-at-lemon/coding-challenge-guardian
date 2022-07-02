@@ -9,44 +9,71 @@ export const mainController = () => {
   const apiKey =  'api-key=617a606f-e0ce-4953-82f7-282f9145c6be'; // usually in .env but would require 3rd party library
   
   const [searchString, setSearchString] = useState<string>();
-  const [queryString, setQueryString] = useState<string>();
+  const [queryString, setQueryString] = useState<string>('');
   const [queryPage, setQueryPage] = useState<string>('page=1&');
-  const [pagesAvailable, setPagesAvailable] = useState<number>();
+
+  // Filter results
+  const [sectionFilterString, setSectionFilterString] = useState<string>();
+  const [dateFilterString, setDateFilterString] = useState<string>();
+  const [hasFilter, setHasFilter] = useState<boolean>();
 
   // Returned data
   const [searchResult, setSearchResult] = useState<any>();
+  const [pagesAvailable, setPagesAvailable] = useState<number>();
 
-  // Handle input
+  // Handle search input
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQueryString(`q=${e.target.value}&`);
   }
   
-
   // Build search string
   const submitSearch = () => {
     let fullString = baseString + queryPage + queryString + additionalFields + apiKey;
 
-    // Allow empty searches
-    if (queryString === undefined) {
-      fullString = baseString + queryPage + additionalFields + apiKey;
-    } else {
-      fullString = baseString + queryPage + queryString + additionalFields + apiKey;
-    }
-
     setSearchString(fullString);
-
     fetchData(fullString)
   }
 
-  // Filter search
-  const filterSearch = () => {
-    console.log(searchString)
+  // Filter by section
+  const handleSectionFilterInput =  (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSectionFilterString(e.target.value);
+  }
+
+  const filterBySection = () => {
+    setHasFilter(true);
+    const filteredResult = searchResult.filter((newsItem: {sectionName: string}) => {
+      return (
+        newsItem.sectionName === sectionFilterString 
+      )
+    });
+
+    setSearchResult(filteredResult);
+  }
+
+  // Filter by date
+  const handleDateFilterInput =  (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDateFilterString(e.target.value);
+  }
+
+  const filterByDate = () => {
+    setHasFilter(true);
+    console.log('date', dateFilterString)
+    const filteredResult = searchResult.filter((newsItem: {webPublicationDate: string}) => {
+      return (
+        cleanDate(newsItem.webPublicationDate) === dateFilterString
+      )
+    });
+
+    setSearchResult(filteredResult);
   }
   
   // Fetch news items
   const fetchData = async (fullString: string) => {
     console.log(fullString)
     const data = await httpGet(fullString);
+
+    const results = data.response.results;
+    
     setSearchResult(data.response.results);
     setPagesAvailable(data.response.pages);
     //console.log(data.response.pages)
@@ -68,19 +95,18 @@ export const mainController = () => {
       
   }, [queryPage])
 
-  console.log(purePageNumber);
+  //console.log(purePageNumber);
 
 
   const incrementPage = () => {
-    const newPageNumber = purePageNumber + 1;
+    let newPageNumber = purePageNumber + 1;
     setQueryPage(`page=${newPageNumber}`)
 
     // Prevent navigating if no more pages available
-    if ( newPageNumber < pagesAvailable) {
-      setQueryPage(`page=${newPageNumber}&`)
-    } else {
-      setQueryPage(`page=${pagesAvailable}&`)
-    }
+    if ( newPageNumber === pagesAvailable || newPageNumber > pagesAvailable) {
+      newPageNumber = pagesAvailable;
+      setQueryPage(`page=${pagesAvailable}`)
+    } 
 
     const nextPageQueryString =  `${baseString}page=${newPageNumber}&${queryString}${additionalFields}${apiKey}`;
     fetchData(nextPageQueryString)
@@ -104,11 +130,16 @@ export const mainController = () => {
     searchResult,
     queryString,
     queryPage,
+    purePageNumber,
+    pagesAvailable,
     fn: {
       handleSearchInput,
       submitSearch,
+      handleSectionFilterInput,
+      handleDateFilterInput,
       fetchData,
-      filterSearch,
+      filterBySection,
+      filterByDate,
       cleanDate,
       incrementPage,
       decrementPage,

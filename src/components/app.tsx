@@ -3,16 +3,18 @@ import React from 'react';
 import { mainController } from '../controllers/mainController';
 
 function App() {
-	const { searchResult, queryString, queryPage, fn } = mainController();
+	const { searchResult, queryString, queryPage, purePageNumber, pagesAvailable, fn } = mainController();
 
 	interface ISearchresult {
 		webTitle: string,
 		webPublicationDate: string,
 		sectionName: string,
-		fields: {
+		fields?: {
 			thumbnail: string,
 		}
-		webUrl: string;
+		webUrl: string,
+		purePageNumber: number,
+		pagesAvailable: number
 	}
 
 	console.log(searchResult);
@@ -20,7 +22,21 @@ function App() {
 	return (
 		<div className="App">
 			<div className='searchBar'>
-				<button onClick={() => fn.handleSearchString('page=1&', 'q=football&')}>fetch data</button>
+				<input 
+					type='text' 
+					onChange={(e) => fn.handleSearchInput(e)}
+				/>
+				<button onClick={() => fn.submitSearch()}>fetch data</button>
+				<input 
+					type='text' 
+					onChange={(e) => fn.handleSectionFilterInput(e)}
+				/>
+				<button onClick={() => fn.filterBySection()}>filter by section</button>
+				<input 
+					type='text' 
+					onChange={(e) => fn.handleDateFilterInput(e)}
+				/>
+				<button onClick={() => fn.filterByDate()}>filter by date</button>
 			</div>
 			<div className='searchResults'>
 				{searchResult &&
@@ -37,7 +53,7 @@ function App() {
 									{result.sectionName}
 								</div>
 								<div className='newsThumb'>
-								<img src={result.fields.thumbnail} alt={result.webTitle} />
+								<img src={result.fields?.thumbnail} alt={result.webTitle} />
 								</div>
 								<div className='readMore'>
 									<a href={result.webUrl} target='_blank'>read more &rarr;</a>
@@ -49,7 +65,7 @@ function App() {
 				}
 				{searchResult &&
 					<div className='navigation'>
-						<div>{queryPage}</div>
+						<div>Page {purePageNumber} of {pagesAvailable}</div>
 						<button onClick={() => fn.decrementPage()}>previous page</button>
 						<button onClick={() => fn.incrementPage()}>next page</button>
 					</div>
