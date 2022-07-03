@@ -161,6 +161,17 @@ export const mainController = () => {
 		//console.log(data.response.pages)
 	}
 
+	// Search history
+	const saveSearchHistory = () => {
+		localStorage.setItem('searchHistory', JSON.stringify(previousSearches));
+	}
+	const restoreSearchHistory = () => {
+		const savedSearchHistory = localStorage.getItem('searchHistory');
+		const parsedSearchHistory = JSON.parse(savedSearchHistory);
+
+		setPreviousSearches(parsedSearchHistory);
+	}
+
 
 	// Pagination
 
@@ -231,6 +242,8 @@ export const mainController = () => {
 			cleanDate,
 			incrementPage,
 			decrementPage,
+			saveSearchHistory,
+			restoreSearchHistory
 		}
 	}
 }

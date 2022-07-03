@@ -10,6 +10,10 @@ function App() {
 
 	return (
 		<div className="App">
+			<div className='wrapper'>
+			<div className='header'>
+				<h1>Welcome to EnjoyHQ News</h1>
+			</div>
 			<div className='searchBar'>
 				<input 
 					type='text' 
@@ -52,6 +56,10 @@ function App() {
 					)
 				})}
 				</ul>
+				<div className='historyTreatment'>
+					<button onClick={() => fn.saveSearchHistory()}>save to search history</button>
+					<button onClick={() => fn.restoreSearchHistory()}>restore search history</button>
+				</div>
 			</div>
 			<div className='searchResults'>
 				{searchResult &&
@@ -85,6 +93,7 @@ function App() {
 						<button onClick={() => fn.incrementPage()}>next page</button>
 					</div>
 				}
+			</div>
 			</div>
 		</div>
 	);
