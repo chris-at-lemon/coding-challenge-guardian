@@ -17,7 +17,7 @@ function App() {
 		pagesAvailable: number
 	}
 
-	console.log(searchResult);
+	//console.log(searchResult);
 
 	return (
 		<div className="App">
@@ -27,16 +27,25 @@ function App() {
 					onChange={(e) => fn.handleSearchInput(e)}
 				/>
 				<button onClick={() => fn.submitSearch()}>fetch data</button>
+				
 				<input 
 					type='text' 
 					onChange={(e) => fn.handleSectionFilterInput(e)}
 				/>
 				<button onClick={() => fn.filterBySection()}>filter by section</button>
+				
+				<button onClick={() => fn.filterByDate('from')}>from date</button>
 				<input 
 					type='text' 
 					onChange={(e) => fn.handleDateFilterInput(e)}
 				/>
-				<button onClick={() => fn.filterByDate()}>filter by date</button>
+				<button onClick={() => fn.filterByDate('to')}>to date</button>
+				
+				<input 
+					type='text' 
+					onChange={(e) => fn.handleOrderByInput(e)}
+				/>
+				<button onClick={() => fn.orderBy()}>order by</button>
 			</div>
 			<div className='searchResults'>
 				{searchResult &&

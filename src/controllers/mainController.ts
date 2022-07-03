@@ -17,6 +17,9 @@ export const mainController = () => {
   const [dateFilterString, setDateFilterString] = useState<string>();
   const [hasFilter, setHasFilter] = useState<boolean>();
 
+  // Order results
+  const [resultsOrder, setResultsOrder] = useState<string>();
+
   // Returned data
   const [searchResult, setSearchResult] = useState<any>();
   const [pagesAvailable, setPagesAvailable] = useState<number>();
@@ -40,14 +43,18 @@ export const mainController = () => {
   }
 
   const filterBySection = () => {
-    setHasFilter(true);
-    const filteredResult = searchResult.filter((newsItem: {sectionName: string}) => {
-      return (
-        newsItem.sectionName === sectionFilterString 
-      )
-    });
+    // setHasFilter(true);
+    // const filteredResult = searchResult.filter((newsItem: {sectionName: string}) => {
+    //   return (
+    //     newsItem.sectionName === sectionFilterString 
+    //   )
+    // });
+    //setSearchResult(filteredResult);
 
-    setSearchResult(filteredResult);
+    const sectionFilter = `section=${sectionFilterString}&`
+
+    const filteredResult = baseString + sectionFilter + queryPage + queryString + additionalFields + apiKey;
+    fetchData(filteredResult)
   }
 
   // Filter by date
@@ -55,22 +62,48 @@ export const mainController = () => {
     setDateFilterString(e.target.value);
   }
 
-  const filterByDate = () => {
-    setHasFilter(true);
-    console.log('date', dateFilterString)
-    const filteredResult = searchResult.filter((newsItem: {webPublicationDate: string}) => {
-      return (
-        cleanDate(newsItem.webPublicationDate) === dateFilterString
-      )
-    });
+  const filterByDate = (dateParam: string) => {
+    // setHasFilter(true);
+    // console.log('date', dateFilterString)
+    // const filteredResult = searchResult.filter((newsItem: {webPublicationDate: string}) => {
+    //   return (
+    //     cleanDate(newsItem.webPublicationDate) === dateFilterString
+    //   )
+    // });
 
-    setSearchResult(filteredResult);
+    // setSearchResult(filteredResult);
+
+    let dateFilter;
+
+    if (dateParam === 'from') {
+      dateFilter = `from-date=${dateFilterString}&`
+    }
+    if (dateParam === 'to') {
+      dateFilter = `to-date=${dateFilterString}&`
+    }
+
+
+    const filteredResult = baseString + dateFilter + queryPage + queryString + additionalFields + apiKey;
+    fetchData(filteredResult)
+  }
+
+  // Order by
+  const handleOrderByInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setResultsOrder(e.target.value);
+  } 
+
+  const orderBy = () => {
+    console.log(resultsOrder)
+    const orderByQueryString =  `${baseString}&${queryString}${additionalFields}${resultsOrder}${apiKey}`;
+    console.log(orderByQueryString)
+    fetchData(orderByQueryString)
   }
   
   // Fetch news items
   const fetchData = async (fullString: string) => {
     console.log(fullString)
     const data = await httpGet(fullString);
+    console.log(data.response)
 
     const results = data.response.results;
     
@@ -108,7 +141,9 @@ export const mainController = () => {
       setQueryPage(`page=${pagesAvailable}`)
     } 
 
-    const nextPageQueryString =  `${baseString}page=${newPageNumber}&${queryString}${additionalFields}${apiKey}`;
+    console.log(resultsOrder)
+
+    const nextPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${additionalFields}${resultsOrder ? resultsOrder : ''}${apiKey}`;
     fetchData(nextPageQueryString)
   }
 
@@ -137,6 +172,8 @@ export const mainController = () => {
       submitSearch,
       handleSectionFilterInput,
       handleDateFilterInput,
+      handleOrderByInput,
+      orderBy,
       fetchData,
       filterBySection,
       filterByDate,
