@@ -13,7 +13,7 @@ export const httpGet = async (url: string, header: any = {}) => {
   }
 };
 
-// Preferred HTTP calls method with Axios, returns data nice and clean
+// Preferred: HTTP calls method with Axios
 
 // export const httpGet = async (url: string, header: any = {}) => {
 //   try {
@@ -28,15 +28,6 @@ export const httpGet = async (url: string, header: any = {}) => {
 
 //     return responseData;
 //   } catch (error: any) {
-//     console.error(error);
-//     console.error({
-//       error: {
-//         getError: error?.response,
-//         headers: error?.response?.headers,
-//         request: error?.response?.request,
-//         data: error?.response?.data,
-//       },
-//     });
 //     const message = error?.response?.data?.hasOwnProperty('message')
 //       ? error.response.data.message
 //       : error.response?.statusText;

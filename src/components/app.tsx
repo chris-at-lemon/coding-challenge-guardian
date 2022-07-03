@@ -3,7 +3,7 @@ import React from 'react';
 import { mainController } from '../controllers/mainController';
 
 function App() {
-	const { searchResult, queryString, queryPage, purePageNumber, pagesAvailable, fn } = mainController();
+	const { searchResult, queryString, queryPage, purePageNumber, pagesAvailable, previousSearches, fn } = mainController();
 
 	interface ISearchresult {
 		webTitle: string,
@@ -15,6 +15,13 @@ function App() {
 		webUrl: string,
 		purePageNumber: number,
 		pagesAvailable: number
+	}
+
+	interface IPrevious {
+		searchString: string,
+		query?: string,
+		orderBy?: string,
+		filteredBy?: string
 	}
 
 	//console.log(searchResult);
@@ -41,11 +48,28 @@ function App() {
 				/>
 				<button onClick={() => fn.filterByDate('to')}>to date</button>
 				
-				<input 
-					type='text' 
-					onChange={(e) => fn.handleOrderByInput(e)}
-				/>
+				<select onChange={(e) => fn.handleOrderByInput(e)}>
+					<option>Please select</option>
+					<option value='order-by=oldest&'>Order by oldest</option>
+					<option value='order-by=newest&'>Order by newest</option>
+					<option value='order-by=relevance&'>Order by relevance</option>
+				</select>
 				<button onClick={() => fn.orderBy()}>order by</button>
+			</div>
+			<div className='previousSearches'>
+				<h2>Search History</h2>
+				<ul>
+				{previousSearches.map((search: IPrevious, i: number) => {
+					return (
+						<li key={i}>
+							{search.query ? `Search term: ${search.query}` : 'No query specified'}, 
+							{search.orderBy ? search.orderBy : ''},
+							{search.filteredBy ? search.filteredBy : ''}
+							<span onClick={() => {fn.fetchData(search.searchString), fn.setQueryString(`q=${search.query}&`)}} className='fakeLink'>repeat this search &gt;</span>
+						</li>
+					)
+				})}
+				</ul>
 			</div>
 			<div className='searchResults'>
 				{searchResult &&

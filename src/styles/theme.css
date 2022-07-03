@@ -357,3 +357,12 @@ th {
 }
 
 /* End: Theme */
+
+/* Customisation */
+
+/* Text styles */
+.fakeLink {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
