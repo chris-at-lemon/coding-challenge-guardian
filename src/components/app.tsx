@@ -1,28 +1,10 @@
 import React from 'react';
 // import './App.css';
 import { mainController } from '../controllers/mainController';
+import { IPrevious, IResultsArray } from '../interfaces/main';
 
 function App() {
 	const { searchResult, queryString, queryPage, purePageNumber, pagesAvailable, previousSearches, fn } = mainController();
-
-	interface ISearchresult {
-		webTitle: string,
-		webPublicationDate: string,
-		sectionName: string,
-		fields?: {
-			thumbnail: string,
-		}
-		webUrl: string,
-		purePageNumber: number,
-		pagesAvailable: number
-	}
-
-	interface IPrevious {
-		searchString: string,
-		query?: string,
-		orderBy?: string,
-		filteredBy?: string
-	}
 
 	//console.log(searchResult);
 
@@ -73,7 +55,7 @@ function App() {
 			</div>
 			<div className='searchResults'>
 				{searchResult &&
-					searchResult.map((result: ISearchresult, i: number) => {
+					searchResult.map((result: IResultsArray, i: number) => {
 						return (
 							<div key={i} className='card'>
 								<div className='newsTitle'>

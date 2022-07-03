@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { httpGet } from "../modules/http"
 import { cleanDate } from "../modules/stringaliser";
+import { IPrevious, IResultsArray } from "../interfaces/main";
 
 export const mainController = () => {
 	////// Variables //////
@@ -23,17 +24,10 @@ export const mainController = () => {
 	const [resultsOrder, setResultsOrder] = useState<string>();
 
 	// Returned data
-	const [searchResult, setSearchResult] = useState<any>();
+	const [searchResult, setSearchResult] = useState<IResultsArray[]>();
 	const [pagesAvailable, setPagesAvailable] = useState<number>();
 
 	// Previous searches
-	interface IPrevious {
-		searchString: string,
-		query?: string,
-		orderBy?: string,
-		filteredBy?: string
-	}
-
 	const [previousSearches, setPreviousSearches] = useState<IPrevious[]>([]);
 
 
@@ -158,7 +152,7 @@ export const mainController = () => {
 	const fetchData = async (fullString: string) => {
 		console.log(fullString)
 		const data = await httpGet(fullString);
-		console.log(data.response)
+		console.log(data.response.results)
 
 		const results = data.response.results;
 
