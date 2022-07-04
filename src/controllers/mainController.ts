@@ -184,7 +184,7 @@ export const mainController = () => {
 	// Fetch news items
 	const fetchData = async (fullString: string) => {
 		const data = await httpGet(fullString);
-		console.log(fullString)
+		//console.log(fullString)
 
 		const results = data.response.results;
 
