@@ -6,8 +6,6 @@ import { IPrevious, IResultsArray } from '../interfaces/main';
 function App() {
 	const { searchResult, queryString, queryPage, purePageNumber, pagesAvailable, previousSearches, fn } = mainController();
 
-	//console.log(searchResult);
-
 	return (
 		<div className="App">
 			<div className='wrapper'>
@@ -79,6 +77,7 @@ function App() {
 						</div>
 					</>
 				}
+				<hr />
 				<div className='searchResults'>
 					{searchResult &&
 						searchResult.map((result: IResultsArray, i: number) => {

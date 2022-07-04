@@ -85,7 +85,6 @@ export const mainController = () => {
 	const filterByDate = (dateParam: string) => {
 		// To filter just the current result
 		//
-		// console.log('date', dateFilterString)
 		// const filteredResult = searchResult.filter((newsItem: {webPublicationDate: string}) => {
 		//   return (
 		//     cleanDate(newsItem.webPublicationDate) === dateFilterString
@@ -126,7 +125,6 @@ export const mainController = () => {
 	}
 
 	const orderBy = () => {
-		//console.log(resultsOrder);
 		const orderByQueryString = `${baseString}${queryPage}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
 
 		// Declare label for order method
@@ -156,15 +154,12 @@ export const mainController = () => {
 
 	// Fetch news items
 	const fetchData = async (fullString: string) => {
-		console.log(fullString)
 		const data = await httpGet(fullString);
-		console.log(data.response.results)
 
 		const results = data.response.results;
 
 		setSearchResult(data.response.results);
 		setPagesAvailable(data.response.pages);
-		//console.log(data.response.pages)
 	}
 
 	// Search history
@@ -189,7 +184,7 @@ export const mainController = () => {
 	// Construct page number
 	const [purePageNumber, setPagePureNumber] = useState<number>();
 
-	// Unpopular useEffect to prevent using state always being 1 render behind
+	// Unpopular useEffect to prevent state always being 1 render behind
 	useEffect(() => {
 		const removeString = queryPage.replace('page=', '');
 		const currentPageNumber = removeString.replace('&', '');
@@ -199,7 +194,6 @@ export const mainController = () => {
 
 	}, [queryPage])
 
-	//console.log(purePageNumber);
 
 
 	const incrementPage = () => {
@@ -211,8 +205,6 @@ export const mainController = () => {
 			newPageNumber = pagesAvailable;
 			setQueryPage(`page=${pagesAvailable}&`)
 		}
-
-		console.log(resultsOrder)
 
 		const nextPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
 		fetchData(nextPageQueryString)
