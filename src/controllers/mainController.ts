@@ -6,10 +6,10 @@ import { IPrevious, IResultsArray } from "../interfaces/main";
 export const mainController = () => {
 	////// Variables //////
 
-	// Query variables
+	// Query variables to construct search URL
 	const baseString = 'https://content.guardianapis.com/search?';
 	const additionalFields = 'show-fields=thumbnail&'
-	const apiKey = 'api-key=617a606f-e0ce-4953-82f7-282f9145c6be'; // usually in .env but would require 3rd party library
+	const apiKey = 'test'; // usually in .env but would require 3rd party library
 
 	const [searchString, setSearchString] = useState<string>();
 	const [query, setQuery] = useState<string>();
@@ -17,13 +17,13 @@ export const mainController = () => {
 	const [queryPage, setQueryPage] = useState<string>('page=1&');
 	const [queryFilter, setQueryFilter] = useState<string>('');
 
-	// Filter results
+	// Filter variables
 	const [sectionFilterString, setSectionFilterString] = useState<string>();
 	const [dateFilterString, setDateFilterString] = useState<string>();
 	const [dateFilterLabel, setDateFilterLabel] = useState<string>('');
 
 
-	// Order results
+	// Order variables
 	const [resultsOrder, setResultsOrder] = useState<string>('');
 	const [resultsOrderLabel, setResultsOrderLabel] = useState<string>('');
 
