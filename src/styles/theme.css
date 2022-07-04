@@ -360,9 +360,112 @@ th {
 
 /* Customisation */
 
+/* Containers */
+.wrapper {
+  padding: 1rem;
+}
+.header {
+  text-align: center;
+}
+.searchBar {
+  margin: 2rem 0;
+}
+.mainSearch {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.resultsTreatment {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.filterDate {
+  margin: 0 2rem;
+}
+.previousSearches {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.searchResults {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.navigation {
+  text-align: center;
+}
+
+/* Cards */
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  max-width: 18%;
+  margin-bottom: .5rem;
+}
+.newsTitle {
+  margin-bottom: 1rem;
+}
+.newsThumb img {
+  max-width: 100%;
+  margin-bottom: .25rem;
+}
+.dateAndSection {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* Text styles */
 .fakeLink {
   color: blue;
   text-decoration: underline;
   cursor: pointer;
+}
+h2 {
+  font-size: 1.6rem;
+}
+strong {
+  font-weight: bold;
+}
+
+/* Inputs */
+input, select {
+  min-height: 1rem;
+}
+select {
+  padding: .55rem 0;
+}
+
+
+/* Buttons */
+button {
+  border: none;
+  border-radius: 0;
+  min-height: 1rem;
+  padding: 0.7rem;
+}
+.btn-primary {
+  background-color: #0d6efd;
+  color: white;
+}
+.btn-warning {
+  background-color: #ffc107;
+  color: #ffc107;
+}
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+.btn-success {
+  background-color: #198754;
+  color: white;
+}
+
+/* Utilities */
+
+.my-1rem {
+  margin: 0 1rem 0 1rem;
 }

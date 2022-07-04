@@ -15,13 +15,17 @@ export const mainController = () => {
 	const [query, setQuery] = useState<string>();
 	const [queryString, setQueryString] = useState<string>('');
 	const [queryPage, setQueryPage] = useState<string>('page=1&');
+	const [queryFilter, setQueryFilter] = useState<string>('');
 
 	// Filter results
 	const [sectionFilterString, setSectionFilterString] = useState<string>();
 	const [dateFilterString, setDateFilterString] = useState<string>();
+	const [dateFilterLabel, setDateFilterLabel] = useState<string>('');
+
 
 	// Order results
-	const [resultsOrder, setResultsOrder] = useState<string>();
+	const [resultsOrder, setResultsOrder] = useState<string>('');
+	const [resultsOrderLabel, setResultsOrderLabel] = useState<string>('');
 
 	// Returned data
 	const [searchResult, setSearchResult] = useState<IResultsArray[]>();
@@ -58,20 +62,19 @@ export const mainController = () => {
 
 	const filterBySection = () => {
 		// To filter just the current result
-		//
-		// const filteredResult = searchResult.filter((newsItem: {sectionName: string}) => {
-		//   return (
-		//     newsItem.sectionName === sectionFilterString 
-		//   )
-		// });
-		//setSearchResult(filteredResult);
+		const filteredResult = searchResult.filter((newsItem: {sectionName: string}) => {
+		   return (
+		     newsItem.sectionName === sectionFilterString 
+		   )
+		 });
+		setSearchResult(filteredResult);
 
 		// To filter by section - always returns empty array, the endpoint has a different use
 
-		const sectionFilter = `section=${sectionFilterString}&`
+		// const sectionFilter = `section=${sectionFilterString}&`
 
-		const filteredResult = baseString + sectionFilter + queryPage + queryString + additionalFields + apiKey;
-		fetchData(filteredResult)
+		// const filteredResult = baseString + sectionFilter + queryPage + queryString + additionalFields + apiKey;
+		// fetchData(filteredResult)
 	}
 
 	// Filter by date
@@ -109,10 +112,12 @@ export const mainController = () => {
 		const filteredResultQueryString = baseString + dateFilter + queryPage + queryString + additionalFields + apiKey;
 
 		// add to previous searches
-		previousSearches.push({ searchString: filteredResultQueryString, query: query, filteredBy: filterLabel });
+		previousSearches.push({ searchString: filteredResultQueryString, query: query, orderBy: resultsOrderLabel ,filteredBy: filterLabel });
 		setPreviousSearches(previousSearches);
+		setDateFilterLabel(filterLabel)
 
-		fetchData(filteredResultQueryString)
+		setQueryFilter(dateFilter);
+		fetchData(filteredResultQueryString);
 	}
 
 	// Order by
@@ -122,7 +127,7 @@ export const mainController = () => {
 
 	const orderBy = () => {
 		//console.log(resultsOrder);
-		const orderByQueryString = `${baseString}&${queryString}${additionalFields}${resultsOrder}${apiKey}`;
+		const orderByQueryString = `${baseString}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
 
 		// Declare label for order method
 		const orderString = resultsOrder;
@@ -142,8 +147,9 @@ export const mainController = () => {
 		}
 
 		// add to previous searches
-		previousSearches.push({ searchString: orderByQueryString, query: query, orderBy: orderLabel });
+		previousSearches.push({ searchString: orderByQueryString, query: query, orderBy: orderLabel, filteredBy: dateFilterLabel });
 		setPreviousSearches(previousSearches);
+		setResultsOrderLabel(orderLabel);
 
 		fetchData(orderByQueryString)
 	}
@@ -165,6 +171,7 @@ export const mainController = () => {
 	const saveSearchHistory = () => {
 		localStorage.setItem('searchHistory', JSON.stringify(previousSearches));
 	}
+
 	const restoreSearchHistory = () => {
 		const savedSearchHistory = localStorage.getItem('searchHistory');
 		const parsedSearchHistory = JSON.parse(savedSearchHistory);
@@ -172,6 +179,10 @@ export const mainController = () => {
 		setPreviousSearches(parsedSearchHistory);
 	}
 
+	const clearSearchHistory = () => {
+		localStorage.removeItem('searchHistory');
+		setPreviousSearches([])
+	}
 
 	// Pagination
 
@@ -203,7 +214,7 @@ export const mainController = () => {
 
 		console.log(resultsOrder)
 
-		const nextPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${additionalFields}${resultsOrder ? resultsOrder : ''}${apiKey}`;
+		const nextPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
 		fetchData(nextPageQueryString)
 	}
 
@@ -217,7 +228,7 @@ export const mainController = () => {
 
 		setQueryPage(`page=${newPageNumber}&`)
 
-		const prevPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${additionalFields}${resultsOrder ? resultsOrder : ''}${apiKey}`;
+		const prevPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
 		fetchData(prevPageQueryString)
 	}
 
@@ -243,7 +254,8 @@ export const mainController = () => {
 			incrementPage,
 			decrementPage,
 			saveSearchHistory,
-			restoreSearchHistory
+			restoreSearchHistory,
+			clearSearchHistory
 		}
 	}
 }
