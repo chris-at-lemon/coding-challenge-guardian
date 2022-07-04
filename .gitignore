@@ -3,3 +3,4 @@ dist
 
 # api keys
 .env
+key.txt
