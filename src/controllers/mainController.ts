@@ -9,7 +9,7 @@ export const mainController = () => {
 	// Query variables to construct search URL
 	const baseString = 'https://content.guardianapis.com/search?';
 	const additionalFields = 'show-fields=thumbnail&'
-	const apiKey = 'api-key=617a606f-e0ce-4953-82f7-282f9145c6be'; // usually in .env but would require 3rd party library
+	const apiKey = 'test'; // usually in .env but would require 3rd party library
 
 	const [searchString, setSearchString] = useState<string>();
 	const [query, setQuery] = useState<string>();
@@ -39,7 +39,7 @@ export const mainController = () => {
 
 
 	////// Handlers //////
-	
+
 	// Handle search input
 	const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setQueryString(`q=${e.target.value}&`);
@@ -51,10 +51,12 @@ export const mainController = () => {
 		let fullString = baseString + queryPage + queryString + additionalFields + apiKey;
 
 		// add to previous searches
-		previousSearches.push({searchString: fullString, query: query})
+		previousSearches.push({ searchString: fullString, query: query })
 		// setPreviousSearches(previousSearches)
 
+		// Add to current global search string
 		setSearchString(fullString);
+
 		fetchData(fullString)
 	}
 
@@ -82,14 +84,16 @@ export const mainController = () => {
 			sectionFilter = '';
 		}
 
-		 const filteredResultQueryString = baseString + sectionFilter + queryFilterDate + queryPage + queryString + additionalFields + apiKey;
-		 
+		const filteredResultQueryString = baseString + sectionFilter + queryFilterDate + queryPage + queryString + additionalFields + apiKey;
+
 		previousSearches.push({ searchString: filteredResultQueryString, query: query, orderBy: resultsOrderLabel, filteredByDate: dateFilterLabel, filteredBySection: sectionFilterString });
 		//setPreviousSearches(previousSearches);
-		 setSectionFilterLabel(sectionFilterString)
-		 
-		 setQueryFilterSection(sectionFilter);
-		 fetchData(filteredResultQueryString)
+		setSectionFilterLabel(sectionFilterString)
+
+		// Add to current global search string
+		setQueryFilterSection(sectionFilter);
+
+		fetchData(filteredResultQueryString)
 	}
 
 	// Filter by date
@@ -125,7 +129,7 @@ export const mainController = () => {
 			if (dateParam === 'to') {
 				dateFilter = `to-date=${dateFilterString}&`;
 				filterLabel = `to date ${dateFilterString}`;
-			}			
+			}
 		} else { // prevent empty submission
 			dateFilter = '';
 			filterLabel = '';
@@ -138,7 +142,9 @@ export const mainController = () => {
 		//setPreviousSearches(previousSearches);
 		setDateFilterLabel(filterLabel)
 
+		// Add to current global search string
 		setQueryFilterDate(dateFilter);
+
 		fetchData(filteredResultQueryString);
 	}
 
