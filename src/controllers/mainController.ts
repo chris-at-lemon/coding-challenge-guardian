@@ -9,18 +9,21 @@ export const mainController = () => {
 	// Query variables to construct search URL
 	const baseString = 'https://content.guardianapis.com/search?';
 	const additionalFields = 'show-fields=thumbnail&'
-	const apiKey = 'test'; // usually in .env but would require 3rd party library
+	const apiKey = 'api-key=617a606f-e0ce-4953-82f7-282f9145c6be'; // usually in .env but would require 3rd party library
 
 	const [searchString, setSearchString] = useState<string>();
 	const [query, setQuery] = useState<string>();
 	const [queryString, setQueryString] = useState<string>('');
 	const [queryPage, setQueryPage] = useState<string>('page=1&');
-	const [queryFilter, setQueryFilter] = useState<string>('');
+	const [queryFilterDate, setQueryFilterDate] = useState<string>('');
+	const [queryFilterSection, setQueryFilterSection] = useState<string>('');
+
 
 	// Filter variables
 	const [sectionFilterString, setSectionFilterString] = useState<string>();
 	const [dateFilterString, setDateFilterString] = useState<string>();
 	const [dateFilterLabel, setDateFilterLabel] = useState<string>('');
+	const [sectionFilterLabel, setSectionFilterLabel] = useState<string>('');
 
 
 	// Order variables
@@ -49,7 +52,7 @@ export const mainController = () => {
 
 		// add to previous searches
 		previousSearches.push({searchString: fullString, query: query})
-		setPreviousSearches(previousSearches)
+		// setPreviousSearches(previousSearches)
 
 		setSearchString(fullString);
 		fetchData(fullString)
@@ -62,19 +65,31 @@ export const mainController = () => {
 
 	const filterBySection = () => {
 		// To filter just the current result
-		const filteredResult = searchResult.filter((newsItem: {sectionName: string}) => {
-		   return (
-		     newsItem.sectionName === sectionFilterString 
-		   )
-		 });
-		setSearchResult(filteredResult);
+		// const filteredResult = searchResult.filter((newsItem: {sectionName: string}) => {
+		//    return (
+		//      newsItem.sectionName === sectionFilterString 
+		//    )
+		//  });
+		// setSearchResult(filteredResult);
 
-		// To filter by section - always returns empty array, the endpoint has a different use
+		// To filter all results
 
-		// const sectionFilter = `section=${sectionFilterString}&`
+		let sectionFilter;
+		// Prevent empty submission
+		if (sectionFilterString) {
+			sectionFilter = `section=${sectionFilterString}&`;
+		} else {
+			sectionFilter = '';
+		}
 
-		// const filteredResult = baseString + sectionFilter + queryPage + queryString + additionalFields + apiKey;
-		// fetchData(filteredResult)
+		 const filteredResultQueryString = baseString + sectionFilter + queryFilterDate + queryPage + queryString + additionalFields + apiKey;
+		 
+		previousSearches.push({ searchString: filteredResultQueryString, query: query, orderBy: resultsOrderLabel, filteredByDate: dateFilterLabel, filteredBySection: sectionFilterString });
+		//setPreviousSearches(previousSearches);
+		 setSectionFilterLabel(sectionFilterString)
+		 
+		 setQueryFilterSection(sectionFilter);
+		 fetchData(filteredResultQueryString)
 	}
 
 	// Filter by date
@@ -93,29 +108,37 @@ export const mainController = () => {
 
 		// setSearchResult(filteredResult);
 
+
 		// To filter all results
 
 		// Type of filter and its label
+
+
 		let dateFilter;
 		let filterLabel;
 
-		if (dateParam === 'from') {
-			dateFilter = `from-date=${dateFilterString}&`;
-			filterLabel = `from date ${dateFilterString}`;
-		}
-		if (dateParam === 'to') {
-			dateFilter = `to-date=${dateFilterString}&`;
-			filterLabel = `to date ${dateFilterString}`;
+		if (dateFilterString) {
+			if (dateParam === 'from') {
+				dateFilter = `from-date=${dateFilterString}&`;
+				filterLabel = `from date ${dateFilterString}`;
+			}
+			if (dateParam === 'to') {
+				dateFilter = `to-date=${dateFilterString}&`;
+				filterLabel = `to date ${dateFilterString}`;
+			}			
+		} else { // prevent empty submission
+			dateFilter = '';
+			filterLabel = '';
 		}
 
-		const filteredResultQueryString = baseString + queryPage + dateFilter + queryString + additionalFields + apiKey;
+		const filteredResultQueryString = baseString + queryPage + dateFilter + queryFilterSection + queryString + additionalFields + apiKey;
 
 		// add to previous searches
-		previousSearches.push({ searchString: filteredResultQueryString, query: query, orderBy: resultsOrderLabel ,filteredBy: filterLabel });
-		setPreviousSearches(previousSearches);
+		previousSearches.push({ searchString: filteredResultQueryString, query: query, orderBy: resultsOrderLabel, filteredByDate: filterLabel, filteredBySection: sectionFilterLabel });
+		//setPreviousSearches(previousSearches);
 		setDateFilterLabel(filterLabel)
 
-		setQueryFilter(dateFilter);
+		setQueryFilterDate(dateFilter);
 		fetchData(filteredResultQueryString);
 	}
 
@@ -125,7 +148,7 @@ export const mainController = () => {
 	}
 
 	const orderBy = () => {
-		const orderByQueryString = `${baseString}${queryPage}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
+		const orderByQueryString = `${baseString}${queryPage}${queryString}${queryFilterDate}${queryFilterSection}${additionalFields}${resultsOrder}${apiKey}`;
 
 		// Declare label for order method
 		const orderString = resultsOrder;
@@ -145,8 +168,8 @@ export const mainController = () => {
 		}
 
 		// add to previous searches
-		previousSearches.push({ searchString: orderByQueryString, query: query, orderBy: orderLabel, filteredBy: dateFilterLabel });
-		setPreviousSearches(previousSearches);
+		previousSearches.push({ searchString: orderByQueryString, query: query, orderBy: orderLabel, filteredByDate: dateFilterLabel, filteredBySection: sectionFilterLabel });
+		//setPreviousSearches(previousSearches);
 		setResultsOrderLabel(orderLabel);
 
 		fetchData(orderByQueryString)
@@ -155,6 +178,7 @@ export const mainController = () => {
 	// Fetch news items
 	const fetchData = async (fullString: string) => {
 		const data = await httpGet(fullString);
+		console.log(fullString)
 
 		const results = data.response.results;
 
@@ -206,7 +230,7 @@ export const mainController = () => {
 			setQueryPage(`page=${pagesAvailable}&`)
 		}
 
-		const nextPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
+		const nextPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${queryFilterDate}${queryFilterSection}${additionalFields}${resultsOrder}${apiKey}`;
 		fetchData(nextPageQueryString)
 	}
 
@@ -220,7 +244,7 @@ export const mainController = () => {
 
 		setQueryPage(`page=${newPageNumber}&`)
 
-		const prevPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
+		const prevPageQueryString = `${baseString}page=${newPageNumber}&${queryString}${queryFilterDate}${queryFilterSection}${additionalFields}${resultsOrder}${apiKey}`;
 		fetchData(prevPageQueryString)
 	}
 

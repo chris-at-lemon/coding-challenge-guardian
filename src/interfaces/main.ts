@@ -17,5 +17,6 @@ export interface IPrevious {
   searchString: string,
   query?: string,
   orderBy?: string,
-  filteredBy?: string
+  filteredByDate?: string,
+  filteredBySection?: string,
 };

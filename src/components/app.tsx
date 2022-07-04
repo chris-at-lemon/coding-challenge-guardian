@@ -61,9 +61,13 @@ function App() {
 											<li key={i}>
 												{search.query ? <><strong>Search term:</strong> {search.query}</> : 'No query specified'}
 												{' | '}
+												
 												{search.orderBy ? search.orderBy + ' | ' : ''}
 
-												{search.filteredBy ? search.filteredBy + ' | ' : ''}
+												{search.filteredByDate ? search.filteredByDate + ' | ' : ''}
+
+												{search.filteredBySection ? `Section:  ${search.filteredBySection}` + ' | ' : ''}
+
 												<span onClick={() => { fn.fetchData(search.searchString), fn.setQueryString(`q=${search.query}&`) }} className='fakeLink'>repeat this search &gt;</span>
 											</li>
 										)
