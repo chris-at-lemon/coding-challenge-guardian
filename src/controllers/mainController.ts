@@ -109,7 +109,7 @@ export const mainController = () => {
 			filterLabel = `to date ${dateFilterString}`;
 		}
 
-		const filteredResultQueryString = baseString + dateFilter + queryPage + queryString + additionalFields + apiKey;
+		const filteredResultQueryString = baseString + queryPage + dateFilter + queryString + additionalFields + apiKey;
 
 		// add to previous searches
 		previousSearches.push({ searchString: filteredResultQueryString, query: query, orderBy: resultsOrderLabel ,filteredBy: filterLabel });
@@ -127,7 +127,7 @@ export const mainController = () => {
 
 	const orderBy = () => {
 		//console.log(resultsOrder);
-		const orderByQueryString = `${baseString}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
+		const orderByQueryString = `${baseString}${queryPage}&${queryString}${queryFilter}${additionalFields}${resultsOrder}${apiKey}`;
 
 		// Declare label for order method
 		const orderString = resultsOrder;
@@ -204,12 +204,12 @@ export const mainController = () => {
 
 	const incrementPage = () => {
 		let newPageNumber = purePageNumber + 1;
-		setQueryPage(`page=${newPageNumber}`)
+		setQueryPage(`page=${newPageNumber}&`)
 
 		// Prevent navigating if no more pages available
 		if (newPageNumber === pagesAvailable || newPageNumber > pagesAvailable) {
 			newPageNumber = pagesAvailable;
-			setQueryPage(`page=${pagesAvailable}`)
+			setQueryPage(`page=${pagesAvailable}&`)
 		}
 
 		console.log(resultsOrder)
