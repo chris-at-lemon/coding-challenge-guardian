@@ -1,4 +1,4 @@
-# EnjoyHQ Frontend Coding Challenge
+# Frontend Coding Challenge
 
 Thank you for your interest in EnjoyHQ. This coding challenge consists of two parts. We don't like puzzles and tricky questions, so we based all tasks on
 real-life problems we had to solve when building EnjoyHQ.

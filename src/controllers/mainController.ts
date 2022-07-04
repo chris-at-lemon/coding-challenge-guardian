@@ -9,7 +9,7 @@ export const mainController = () => {
 	// Query variables to construct search URL
 	const baseString = 'https://content.guardianapis.com/search?';
 	const additionalFields = 'show-fields=thumbnail&'
-	const apiKey = 'test'; // usually in .env but would require 3rd party library
+	const apiKey = 'get-guardian-api-key'; // usually in .env but would require 3rd party library
 
 	const [searchString, setSearchString] = useState<string>();
 	const [query, setQuery] = useState<string>();
@@ -21,9 +21,9 @@ export const mainController = () => {
 
 	// Filter variables
 	const [sectionFilterString, setSectionFilterString] = useState<string>();
+	const [sectionFilterLabel, setSectionFilterLabel] = useState<string>('');
 	const [dateFilterString, setDateFilterString] = useState<string>();
 	const [dateFilterLabel, setDateFilterLabel] = useState<string>('');
-	const [sectionFilterLabel, setSectionFilterLabel] = useState<string>('');
 
 
 	// Order variables
